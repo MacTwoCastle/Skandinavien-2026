@@ -577,6 +577,38 @@
       font-size: 1rem;
     }
 
+    .city-links {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .city-link {
+      min-height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--station-ink);
+      text-decoration: none;
+      display: grid;
+      align-content: center;
+      justify-items: start;
+      padding: 8px 10px;
+      font-weight: 700;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .city-link:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+
+    .city-link small {
+      font-weight: 500;
+      color: var(--muted);
+    }
+
     @media (min-width: 860px) {
       .grid {
         grid-template-columns: 1.1fr 0.9fr;
@@ -681,13 +713,16 @@
         </article>
 
         <article class="card">
-          <h3>In-App statt PDF</h3>
+          <h3>Städte in Wikipedia</h3>
           <ul class="list">
-            <li class="item"><strong>Buchungsinfos</strong>Im Bereich Buchungen nach Station gegliedert.</li>
-            <li class="item"><strong>Kontakte</strong>Direkt anwählbar im Bereich Kontakte.</li>
-            <li class="item"><strong>Reisetipps</strong>Stationsbezogen mit direktem Kartenstart.</li>
-            <li class="item"><strong>Dokumentenfreiheit</strong>Alle reiseentscheidenden Infos sind nativ in der App aufbereitet.</li>
+            <li class="item"><strong>Mehr Hintergrundwissen</strong>Per Klick direkt zur deutschen Wikipedia der jeweiligen Station.</li>
           </ul>
+          <div class="city-links" aria-label="Wikipedia Städte">
+            <a class="city-link external-link" href="https://de.wikipedia.org/wiki/L%C3%BCbeck" target="_blank" rel="noreferrer">Lübeck<small>Deutschland</small></a>
+            <a class="city-link external-link" href="https://de.wikipedia.org/wiki/Kopenhagen" target="_blank" rel="noreferrer">Kopenhagen<small>Dänemark</small></a>
+            <a class="city-link external-link" href="https://de.wikipedia.org/wiki/G%C3%B6teborg" target="_blank" rel="noreferrer">Göteborg<small>Schweden</small></a>
+            <a class="city-link external-link" href="https://de.wikipedia.org/wiki/Blokhus" target="_blank" rel="noreferrer">Blokhus<small>Dänemark</small></a>
+          </div>
           <div class="actions">
             <button class="cta primary" data-jump="tipps" type="button">Zu den Reisetipps</button>
           </div>
@@ -727,15 +762,6 @@
           </div>
           <div class="daytrip-card" id="dayTripCard" hidden></div>
           <p class="hint">Tipps sind in Orte/Aktivitäten und Kulinarik geteilt. Ein Klick zeigt die ausführlichen Details mit Links.</p>
-        </article>
-        <article class="card">
-          <h3>Bilder zur Station</h3>
-          <div class="gallery" id="stationGallery"></div>
-          <div class="actions" style="margin-top:12px;">
-            <a class="cta" href="../Oeresundbruecke.jpg">Öresundbrücke (Bild)</a>
-            <a class="cta external-link" href="https://www.oresundsbron.com/de/tickets" target="_blank" rel="noreferrer">Öresund buchen</a>
-            <button class="cta primary" data-jump="reiseplan" type="button">Zur Reiseübersicht</button>
-          </div>
         </article>
       </div>
     </section>
@@ -1301,7 +1327,7 @@
             tipSelection[selectionKey] = tip.id;
             renderTips(station, {
               animateDetail: true,
-              scrollToDetail: window.matchMedia("(max-width: 859px)").matches
+              scrollToDetail: true
             });
           });
           list.appendChild(li);
@@ -1387,19 +1413,6 @@
       document.getElementById("tipsCulinary").classList.toggle("active", tipsCategory === "culinary");
     }
 
-    function renderGallery(station) {
-      const gallery = document.getElementById("stationGallery");
-      gallery.innerHTML = "";
-      station.images.forEach(image => {
-        const figure = document.createElement("figure");
-        figure.innerHTML = `
-          <img src="${image.src}" alt="${image.caption}" loading="lazy" />
-          <figcaption>${image.caption}</figcaption>
-        `;
-        gallery.appendChild(figure);
-      });
-    }
-
     function renderContacts() {
       const list = document.getElementById("contactList");
       list.innerHTML = "";
@@ -1423,7 +1436,6 @@
       renderBookingCard(station);
       renderBookingDetails(station);
       renderTips(station);
-      renderGallery(station);
     }
 
     function activatePanel(panelId) {
