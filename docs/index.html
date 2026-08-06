@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#183a37" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Skandi 2026" />
+  <link rel="manifest" href="app.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <title>Skandinavien 2026</title>
+  <style>
+    :root {
+      --ink: #13231f;
+      --paper: #f7f4ee;
+      --panel: rgba(255, 255, 255, 0.78);
+      --line: rgba(17, 44, 39, 0.16);
+      --mint: #2f7366;
+      --sand: #f2bd74;
+      --berry: #93475b;
+      --night: #102725;
+      --radius: 18px;
+      --tap: 44px;
+      --hero-1: rgba(16, 39, 37, 0.9);
+      --hero-2: rgba(47, 115, 102, 0.9);
+      --accent: #2f7366;
+      --accent-deep: #1f5b50;
+      --accent-soft: #dbece9;
+      --station-ink: #1e423b;
+      --bg-a: #f5d9a8;
+      --bg-b: #b7d8d2;
+      --bg-c1: #ecf5f2;
+      --bg-c2: #d6ebe5;
+      --bg-c3: #c2dfd9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+      background:
+        radial-gradient(1100px 700px at 6% -10%, var(--bg-a) 0%, transparent 62%),
+        radial-gradient(1200px 700px at 110% 0%, var(--bg-b) 0%, transparent 58%),
+        linear-gradient(160deg, var(--bg-c1) 0%, var(--bg-c2) 36%, var(--bg-c3) 100%);
+      min-height: 100vh;
+      transition: background 320ms ease;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.15;
+      background-image:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.4) 25%, transparent 25%);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+
+    .app {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 16px 14px 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, var(--hero-1), var(--hero-2));
+      color: #effcf7;
+      border-radius: calc(var(--radius) + 4px);
+      padding: 18px;
+      box-shadow: 0 14px 34px rgba(15, 43, 40, 0.24);
+      animation: rise 480ms ease-out both;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: "Palatino Linotype", "Book Antiqua", serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      letter-spacing: 0.03em;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      font-size: 1rem;
+      line-height: 1.4;
+      opacity: 0.95;
+    }
+
+    .update-bar {
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(252, 243, 228, 0.95);
+      color: #5d3e10;
+      border: 1px solid #e8ca98;
+    }
+
+    .update-bar button {
+      min-height: var(--tap);
+      border: 0;
+      border-radius: 10px;
+      background: #8c4e1f;
+      color: #fff;
+      padding: 0 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tabs {
+      margin-top: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 8px;
+      z-index: 4;
+    }
+
+    .tab {
+      min-height: var(--tap);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: #f8faf8;
+      color: #1f3b36;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent-deep);
+    }
+
+    .panel {
+      margin-top: 12px;
+      display: none;
+      animation: rise 320ms ease-out both;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .station-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+    }
+
+    .section-label {
+      margin: 0 0 8px;
+      font-size: 0.86rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      font-weight: 700;
+    }
+
+    .station-btn {
+      min-height: var(--tap);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: #1b3a35;
+      padding: 0 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .station-btn.active {
+      background: var(--accent-deep);
+      color: #fff;
+      border-color: var(--accent-deep);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 24px rgba(22, 59, 53, 0.12);
+    }
+
+    .card h2,
+    .card h3 {
+      margin: 0 0 8px;
+      font-family: "Palatino Linotype", "Book Antiqua", serif;
+      color: var(--station-ink);
+    }
+
+    .muted {
+      margin: 0;
+      opacity: 0.84;
+      line-height: 1.4;
+    }
+
+    .list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--station-ink);
+    }
+
+    .item .mini {
+      margin: 0;
+      font-size: 0.86rem;
+      opacity: 0.82;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .tip-meta {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 0 10px;
+      font-size: 0.78rem;
+      background: #fff;
+      color: var(--station-ink);
+      font-weight: 700;
+    }
+
+    .chip.classic {
+      background: #f5f1e7;
+    }
+
+    .tip-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+
+    .tip-filter button {
+      min-height: var(--tap);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--station-ink);
+      padding: 0 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tip-filter button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent-deep);
+    }
+
+    .tip-image {
+      margin-top: 8px;
+    }
+
+    .tip-image img {
+      display: block;
+      width: 100%;
+      max-width: 220px;
+      height: 130px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      object-fit: cover;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 18, 22, 0.84);
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-card {
+      width: min(900px, 96vw);
+      max-height: 92vh;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .lightbox-card img {
+      display: block;
+      width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #f7f7f7;
+    }
+
+    .lightbox-bar {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .lightbox-close {
+      min-height: var(--tap);
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      padding: 0 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--tap);
+      border-radius: 10px;
+      border: 1px solid var(--accent-deep);
+      background: #fff;
+      color: var(--accent-deep);
+      text-decoration: none;
+      padding: 0 12px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .cta.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .external-link::before {
+      content: "🌐︎";
+      color: currentColor;
+      font-weight: 700;
+      margin-right: 0.45em;
+    }
+
+    .timeline {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .timeline li {
+      border-left: 4px solid var(--accent-deep);
+      padding: 8px 10px;
+      background: var(--accent-soft);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .gallery figure {
+      margin: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .gallery img {
+      display: block;
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .gallery figcaption {
+      padding: 8px;
+      font-size: 0.83rem;
+      line-height: 1.3;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    @media (min-width: 860px) {
+      .grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+
+      .mini-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .gallery img {
+        height: 110px;
+      }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <h1>Skandinavien 2026</h1>
+      <p>Reiseplan, Buchungen, Kontakte und Tipps in einer klaren Ansicht. Alles für den Reisetag, auch ohne Netz.</p>
+      <div class="update-bar" id="updateBar" aria-live="polite">
+        <span>Neue Inhalte verfügbar.</span>
+        <button id="applyUpdate" type="button">Jetzt aktualisieren</button>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Hauptbereiche">
+      <button class="tab active" data-panel="reiseplan" type="button">Reiseplan</button>
+      <button class="tab" data-panel="buchungen" type="button">Buchungen</button>
+      <button class="tab" data-panel="kontakte" type="button">Kontakte</button>
+      <button class="tab" data-panel="tipps" type="button">Reisetipps</button>
+    </nav>
+
+    <section class="panel active" id="reiseplan">
+      <div class="grid">
+        <article class="card">
+          <h2>Routenverlauf</h2>
+          <ul class="timeline" id="routeTimeline"></ul>
+          <p class="hint" id="routeSummary"></p>
+          <div class="actions">
+            <a class="cta" href="../Reiseroute%20(Google%20Maps).png">Routenbild öffnen</a>
+            <button class="cta primary" data-jump="buchungen" type="button">Zu den Buchungen</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Fahrt und Organisation</h3>
+          <ul class="list">
+            <li class="item"><strong>Ladepuffer</strong>Richtwert: 30 Minuten je 350-400 km.</li>
+            <li class="item"><strong>Verspätungsregel</strong>Ab 45 Minuten die Unterkunft direkt anrufen.</li>
+            <li class="item"><strong>Rückreise Blokhus</strong>Abfahrt ab 09:00, Hausfreigabe bis 10:00.</li>
+            <li class="item"><strong>Zahlung</strong>Karte bevorzugt, Bargeld als Backup.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="mini-grid">
+        <article class="card">
+          <h3>Grenz- und Fährdetails</h3>
+          <ul class="list">
+            <li class="item"><strong>Öresundbrücke</strong>Grenzwechsel DK/SE über E20, Maut einplanen.</li>
+            <li class="item"><strong>Online-Ticket Öresund</strong>Richtwert: 420 DKK pro Einzelfahrt.</li>
+            <li class="item"><strong>Göteborg → Frederikshavn</strong>Stena Danica, 15.08., 09:05-12:35.</li>
+            <li class="item"><strong>Check-in Fähre</strong>Spätestens 30 Minuten vor Abfahrt.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>In-App statt PDF</h3>
+          <ul class="list">
+            <li class="item"><strong>Buchungsinfos</strong>Im Bereich Buchungen nach Station gegliedert.</li>
+            <li class="item"><strong>Kontakte</strong>Direkt anwählbar im Bereich Kontakte.</li>
+            <li class="item"><strong>Reisetipps</strong>Stationsbezogen mit direktem Kartenstart.</li>
+            <li class="item"><strong>Dokumentenfreiheit</strong>Alle reiseentscheidenden Infos sind nativ in der App aufbereitet.</li>
+          </ul>
+          <div class="actions">
+            <button class="cta primary" data-jump="tipps" type="button">Zu den Reisetipps</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="buchungen">
+      <p class="section-label">Station wählen</p>
+      <div class="station-scroll" id="stationTabsBookings" aria-label="Stationen Buchungen"></div>
+      <div class="grid">
+        <article class="card" id="bookingCard"></article>
+        <article class="card" id="bookingDetailsCard"></article>
+      </div>
+    </section>
+
+    <section class="panel" id="kontakte">
+      <div class="card">
+        <h2>Kontaktliste</h2>
+        <ul class="list" id="contactList"></ul>
+      </div>
+    </section>
+
+    <section class="panel" id="tipps">
+      <p class="section-label">Station wählen</p>
+      <div class="station-scroll" id="stationTabsTips" aria-label="Stationen Tipps"></div>
+      <div class="grid">
+        <article class="card">
+          <h3>Top-Tipps</h3>
+          <div class="tip-filter" role="group" aria-label="Tipp-Ebene">
+            <button id="tipsPrimary" class="active" type="button">Primärtipps</button>
+            <button id="tipsClassic" type="button">Optionale Klassiker</button>
+          </div>
+          <ul class="list" id="tipsList"></ul>
+          <p class="hint">Primärtipps und optionale Klassiker sind jetzt vollständig getrennt dargestellt.</p>
+        </article>
+        <article class="card">
+          <h3>Bilder zur Station</h3>
+          <div class="gallery" id="stationGallery"></div>
+          <div class="actions" style="margin-top:12px;">
+            <a class="cta" href="../Oeresundbruecke.jpg">Öresundbrücke</a>
+            <button class="cta primary" data-jump="reiseplan" type="button">Zur Reiseübersicht</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="lightbox" id="tipLightbox" aria-hidden="true">
+      <div class="lightbox-card">
+        <img id="tipLightboxImage" alt="Tippbild" />
+        <div class="lightbox-bar">
+          <strong id="tipLightboxCaption"></strong>
+          <button class="lightbox-close" id="tipLightboxClose" type="button">Schließen</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const routeLegs = [
+      { date: "08.08.", from: "Weinheim", to: "Lübeck", km: 604, driveTime: "6h 13min" },
+      { date: "10.08.", from: "Lübeck", to: "Kopenhagen", km: 273, driveTime: "4h 11min" },
+      { date: "13.08.", from: "Kopenhagen", to: "Göteborg", km: 313, driveTime: "3h 31min" },
+      { date: "15.08.", from: "Göteborg", to: "Blokhus", km: 176, driveTime: "5h 16min", note: "inkl. Fähre 09:05-12:35" },
+      { date: "22.08.", from: "Blokhus", to: "Weinheim", km: 1035, driveTime: "10h 36min" }
+    ];
+
+    const stations = [
+      {
+        id: "luebeck",
+        name: "Lübeck",
+        palette: {
+          accent: "#b53a36",
+          accentDeep: "#2f2b2b",
+          accentSoft: "#efe0d7",
+          hero1: "rgba(30, 28, 29, 0.9)",
+          hero2: "rgba(168, 45, 43, 0.88)",
+          stationInk: "#3b2a2a",
+          bgA: "#f4d6a5",
+          bgB: "#d3e0e2",
+          bgC1: "#eef3f1",
+          bgC2: "#e6e2dc",
+          bgC3: "#d8d5ce"
+        },
+        booking: {
+          unterkunft: "Hotel IV Jahreszeiten",
+          anreise: "08.08.2026",
+          checkin: "Ankunftstag, ideal vorab Uhrzeit abstimmen",
+          adresse: "Bei der Lohmühle 27, 23554 Lübeck",
+          telefon: "+49 451 480530",
+          nav: "Bei der Lohmühle 27, 23554 Lübeck",
+          details: [
+            { label: "Buchungsart", value: "Hotelübernachtung" },
+            { label: "Wichtige Aktion", value: "Bei Verspätung >45 Min anrufen" },
+            { label: "Anfahrt", value: "Direkt zur Hoteladresse navigieren" },
+            { label: "Vor Ort", value: "Check-in-Daten griffbereit halten" }
+          ],
+          nextSteps: [
+            "Ankunftszeit am Reisetag prüfen.",
+            "Bei Verzögerung rechtzeitig telefonisch informieren.",
+            "Nach Check-in Auto und Gepäck für Altstadtbesuch planen."
+          ]
+        },
+        tips: [
+          { level: "primary", title: "Flüchtlingshof", note: "Historischer Gang mit viel Lübeck-Charakter.", fit: "Lokal-Favorit, wenig Mainstream", mapQuery: "Füchtingshof Lübeck" },
+          { level: "primary", title: "Glandorps Gang", note: "Kleiner Altstadtgang mit Handwerkergeschichte.", fit: "Lokal-Favorit, wenig Mainstream", mapQuery: "Glandorps Gang Lübeck" },
+          { level: "primary", title: "Rosengang", note: "Versteckter Hofbereich für ruhigen Altstadtblick.", fit: "Lokal-Favorit, wenig Mainstream", mapQuery: "Rosengang Lübeck" },
+          { level: "primary", title: "Hospital zum Heiligen Geist", note: "Mittelalterlicher Komplex, atmosphärisch und zentral.", fit: "Lokal plus Kultur", mapQuery: "Hospital zum Heiligen Geist Lübeck" },
+          { level: "primary", title: "Drägerpark", note: "Grüne Pause an der Wakenitz abseits der Hauptströme.", fit: "Wenig Mainstream", mapQuery: "Drägerpark Lübeck" },
+          { level: "classic", title: "Holstentor", note: "Ikonischer Klassiker, optional bei ausreichend Zeit.", fit: "Optionaler Klassiker", mapQuery: "Holstentor Lübeck" },
+          { level: "classic", title: "Lübecker Rathaus", note: "Historischer Kernspot in der Altstadt.", fit: "Optionaler Klassiker", mapQuery: "Lübecker Rathaus" }
+        ],
+        images: [
+          { src: "../L%C3%BCbeck/117219042.jpg", caption: "Lübeck Unterkunft" },
+          { src: "../L%C3%BCbeck/464668659.jpg", caption: "Lübeck Zimmer" }
+        ]
+      },
+      {
+        id: "kopenhagen",
+        name: "Kopenhagen",
+        palette: {
+          accent: "#c4494e",
+          accentDeep: "#8c2b34",
+          accentSoft: "#f2dddd",
+          hero1: "rgba(110, 26, 35, 0.9)",
+          hero2: "rgba(194, 73, 78, 0.88)",
+          stationInk: "#5f1f29",
+          bgA: "#f6ddcf",
+          bgB: "#d8e4e8",
+          bgC1: "#f3f7f8",
+          bgC2: "#ebeff2",
+          bgC3: "#e1e7eb"
+        },
+        booking: {
+          unterkunft: "Spurvereden ved vandet",
+          anreise: "10.08.2026",
+          checkin: "Ankunftstag, Zeitfenster laut Gastgeberkommunikation",
+          adresse: "Greve Strand, Dänemark",
+          telefon: "+45 30 11 46 07",
+          nav: "Greve Strand, Denmark",
+          details: [
+            { label: "Buchungsart", value: "Ferienunterkunft" },
+            { label: "Wichtige Aktion", value: "Ankunftszeit mit Gastgeber abstimmen" },
+            { label: "Anfahrt", value: "Ziel: Greve Strand" },
+            { label: "Vor Ort", value: "Zugangsinformationen vor Abfahrt prüfen" }
+          ],
+          nextSteps: [
+            "Am Vorabend die finale Ankunftszeit kalkulieren.",
+            "Kontakttelefon für eventuelle Rückfragen griffbereit halten.",
+            "Nach Ankunft Station Kopenhagen als Tagesbasis nutzen."
+          ]
+        },
+        tips: [
+          { level: "primary", title: "Jægersborggade", note: "Lokale Straße mit kleinen Cafés und weniger Touristenfokus.", fit: "Lokal-Favorit, wenig Mainstream", mapQuery: "Jægersborggade Kopenhagen" },
+          { level: "primary", title: "Superkilen", note: "Ungewöhnlicher Stadtpark mit starkem lokalen Charakter.", fit: "Wenig Mainstream", mapQuery: "Superkilen Kopenhagen" },
+          { level: "primary", title: "Cisternerne", note: "Unterirdische Kunst im ehemaligen Wasserreservoir.", fit: "Wenig Mainstream", mapQuery: "Cisternerne Frederiksberg" },
+          { level: "primary", title: "Refshaleøen", note: "Ehemaliges Werftgebiet mit Ateliers und Hafenatmosphäre.", fit: "Lokal plus kreativ", mapQuery: "Refshaleøen Kopenhagen" },
+          { level: "primary", title: "Nordhavn", note: "Modernes Wasserquartier abseits des klassischen Rundgangs.", fit: "Wenig Mainstream", mapQuery: "Nordhavn Kopenhagen" },
+          { level: "classic", title: "Nyhavn", note: "Bekanntes Hafenviertel als optionaler Klassiker.", fit: "Optionaler Klassiker", mapQuery: "Nyhavn Kopenhagen" },
+          { level: "classic", title: "Schloss Rosenborg", note: "Renaissance-Schloss als klassischer Kulturpunkt.", fit: "Optionaler Klassiker", mapQuery: "Rosenborg Castle" }
+        ],
+        images: [
+          { src: "../Kopenhagen/183496537.jpg", caption: "Kopenhagen Unterkunft" },
+          { src: "../Kopenhagen/233219480.jpg", caption: "Kopenhagen Zimmer" }
+        ]
+      },
+      {
+        id: "goeteborg",
+        name: "Göteborg",
+        palette: {
+          accent: "#2f6db1",
+          accentDeep: "#224c8d",
+          accentSoft: "#dbe8f8",
+          hero1: "rgba(22, 57, 111, 0.92)",
+          hero2: "rgba(51, 111, 183, 0.86)",
+          stationInk: "#1f3f76",
+          bgA: "#f5e2ad",
+          bgB: "#d0deef",
+          bgC1: "#edf4fb",
+          bgC2: "#e1ebf8",
+          bgC3: "#d3e1f2"
+        },
+        booking: {
+          unterkunft: "Apartment Near Sea and Nature",
+          anreise: "13.08.2026",
+          checkin: "Ankunftstag gemäß Gastgeberabstimmung",
+          adresse: "Göteborg, Schweden",
+          telefon: "+46 73 500 20 79",
+          nav: "Gothenburg, Sweden",
+          details: [
+            { label: "Buchungsart", value: "Apartment" },
+            { label: "Wichtige Aktion", value: "Ankunft und Schlüsselmodus rechtzeitig klären" },
+            { label: "Anfahrt", value: "Zielbereich Göteborg" },
+            { label: "Vor Ort", value: "Unterkunft als Basis für Stadt und Schären nutzen" }
+          ],
+          nextSteps: [
+            "Vor Abfahrt in Kopenhagen Ankunftsfenster prüfen.",
+            "Telefonnummer des Hosts am Reisetag bereit halten.",
+            "Am Folgetag Schärenausflug oder Stadtprogramm auswählen."
+          ]
+        },
+        tips: [
+          { level: "primary", title: "Klippan Kulturreservat", note: "Historisches Hafenviertel mit Cafés und lokaler Stimmung.", fit: "Lokal-Favorit, wenig Mainstream", mapQuery: "Klippan Kulturreservat Göteborg" },
+          { level: "primary", title: "Styrsö", note: "Autofreie Schäreninsel mit kleinen Buchten und ruhigen Wegen.", fit: "Wenig Mainstream", mapQuery: "Styrsö Göteborg" },
+          { level: "primary", title: "Vrångö", note: "Südlichste bewohnte Insel mit viel Natur und Wanderwegen.", fit: "Wenig Mainstream", mapQuery: "Vrångö Göteborg" },
+          { level: "primary", title: "Brännö", note: "Ruhige Insel mit traditionellen Holzhäusern.", fit: "Lokal-Favorit", mapQuery: "Brännö Göteborg" },
+          { level: "primary", title: "Keillers Park", note: "Aussichtspunkt mit starkem Blick über den Hafen.", fit: "Wenig Mainstream", mapQuery: "Keillers Park Göteborg" },
+          { level: "classic", title: "Haga", note: "Bekanntes Altstadtviertel als optionaler Klassiker.", fit: "Optionaler Klassiker", mapQuery: "Haga Göteborg" },
+          { level: "classic", title: "Skansen Kronan", note: "Festungsanlage mit klassischer Aussicht.", fit: "Optionaler Klassiker", mapQuery: "Skansen Kronan" }
+        ],
+        images: [
+          { src: "../G%C3%B6teborg/729899465.jpg", caption: "Göteborg Unterkunft" },
+          { src: "../G%C3%B6teborg/731736193.jpg", caption: "Göteborg Wohnbereich" }
+        ]
+      },
+      {
+        id: "blokhus",
+        name: "Blokhus",
+        palette: {
+          accent: "#bf545a",
+          accentDeep: "#85343b",
+          accentSoft: "#f4e2de",
+          hero1: "rgba(102, 33, 39, 0.92)",
+          hero2: "rgba(191, 84, 90, 0.84)",
+          stationInk: "#5e2a30",
+          bgA: "#f6e0c0",
+          bgB: "#d8e8e3",
+          bgC1: "#f2f6f5",
+          bgC2: "#e8f0ee",
+          bgC3: "#dde9e6"
+        },
+        booking: {
+          unterkunft: "Ferienhaus Amina",
+          anreise: "15.08.2026",
+          checkin: "Schlüsselbox 2560",
+          adresse: "Blokhus, Dänemark",
+          telefon: "+45 98 24 87 88",
+          nav: "Blokhus, Denmark",
+          details: [
+            { label: "Buchungsart", value: "Ferienhaus" },
+            { label: "Schlüssel", value: "Schlüsselbox-Code 2560" },
+            { label: "Wichtige Fristen", value: "Mängel innerhalb 48h melden" },
+            { label: "Abreise", value: "Hausfreigabe bis 10:00 Uhr" }
+          ],
+          nextSteps: [
+            "Nach Ankunft Schlüsselbox nutzen und Hauszustand dokumentieren.",
+            "Kurzcheck auf Mängel am ersten Tag durchführen.",
+            "Rückreisetag am 22.08. mit 10:00-Auszug planen."
+          ]
+        },
+        tips: [
+          { level: "primary", title: "Gateway Blokhus", note: "Naturgebiet mit Wander- und Bike-Routen in Dünen und Wald.", fit: "Lokal-Favorit, wenig Mainstream", mapQuery: "Gateway Blokhus" },
+          { level: "primary", title: "Skulpturparken Blokhus", note: "Kunstpark mit wechselnden Skulpturen.", fit: "Wenig Mainstream", mapQuery: "Skulpturparken Blokhus" },
+          { level: "primary", title: "Rubjerg Knude Fyr", note: "Leuchtturm auf Wanderdüne, landschaftlich stark.", fit: "Natur-Highlight", mapQuery: "Rubjerg Knude Fyr" },
+          { level: "primary", title: "Bulbjerg", note: "Steilküste mit weitem Nordsee-Blick.", fit: "Wenig Mainstream", mapQuery: "Bulbjerg Denmark" },
+          { level: "primary", title: "Tranum Klitplantage", note: "Wald- und Dünengebiet für längere Touren.", fit: "Lokal-Favorit", mapQuery: "Tranum Klitplantage" },
+          { level: "classic", title: "Blokhus Strand", note: "Breiter Sandstrand als klassischer Küsten-Spot.", fit: "Optionaler Klassiker", mapQuery: "Blokhus Strand" },
+          { level: "classic", title: "Løkken", note: "Charmantes Küstenstädtchen als Ausflugsklassiker.", fit: "Optionaler Klassiker", mapQuery: "Løkken Denmark" }
+        ],
+        images: [
+          { src: "../Blokhus/House%20Amina%20-%20Blokhus.jpg", caption: "Haus Amina" },
+          { src: "../Blokhus/House%20Amina%20-%20Meeresblick.jpg", caption: "Meeresblick" }
+        ]
+      }
+    ];
+
+    const contacts = [
+      { title: "Lübeck Unterkunft", info: "Hotel IV Jahreszeiten", phone: "+49 451 480530" },
+      { title: "Kopenhagen Unterkunft", info: "Spurvereden ved vandet", phone: "+45 30 11 46 07" },
+      { title: "Göteborg Unterkunft", info: "Apartment Near Sea and Nature", phone: "+46 73 500 20 79" },
+      { title: "Blokhus Schlüsselhalter", info: "Amina Interhome", phone: "+45 98 24 87 88" }
+    ];
+
+    let activeStationId = stations[0].id;
+    let tipsMode = "primary";
+
+    function isAppleDevice() {
+      const ua = navigator.userAgent || "";
+      return /iPhone|iPad|iPod|Macintosh/.test(ua);
+    }
+
+    function mapLink(query) {
+      const encoded = encodeURIComponent(query);
+      if (isAppleDevice()) {
+        return `https://maps.apple.com/?q=${encoded}`;
+      }
+      return `https://www.google.com/maps/search/?api=1&query=${encoded}`;
+    }
+
+    function infoLink(query) {
+      return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    }
+
+    function stationById(id) {
+      return stations.find(s => s.id === id) || stations[0];
+    }
+
+    function applyStationTheme(station) {
+      const palette = station.palette;
+      if (!palette) return;
+
+      const root = document.documentElement;
+      root.style.setProperty("--accent", palette.accent);
+      root.style.setProperty("--accent-deep", palette.accentDeep);
+      root.style.setProperty("--accent-soft", palette.accentSoft);
+      root.style.setProperty("--hero-1", palette.hero1);
+      root.style.setProperty("--hero-2", palette.hero2);
+      root.style.setProperty("--station-ink", palette.stationInk);
+      root.style.setProperty("--bg-a", palette.bgA);
+      root.style.setProperty("--bg-b", palette.bgB);
+      root.style.setProperty("--bg-c1", palette.bgC1);
+      root.style.setProperty("--bg-c2", palette.bgC2);
+      root.style.setProperty("--bg-c3", palette.bgC3);
+
+      const themeMeta = document.querySelector('meta[name="theme-color"]');
+      if (themeMeta) {
+        themeMeta.setAttribute("content", palette.accentDeep);
+      }
+    }
+
+    function renderStationTabs(targetId) {
+      const host = document.getElementById(targetId);
+      host.innerHTML = "";
+      stations.forEach(station => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `station-btn${station.id === activeStationId ? " active" : ""}`;
+        btn.textContent = station.name;
+        btn.addEventListener("click", () => {
+          activeStationId = station.id;
+          renderAllStationBlocks();
+        });
+        host.appendChild(btn);
+      });
+    }
+
+    function renderBookingCard(station) {
+      const card = document.getElementById("bookingCard");
+      const booking = station.booking;
+      card.innerHTML = `
+        <h2>${station.name}: Buchung</h2>
+        <p class="muted"><strong>${booking.unterkunft}</strong></p>
+        <ul class="list" style="margin-top:10px;">
+          <li class="item"><strong>Anreise</strong>${booking.anreise}</li>
+          <li class="item"><strong>Check-in</strong>${booking.checkin}</li>
+          <li class="item"><strong>Adresse</strong>${booking.adresse}</li>
+          <li class="item"><strong>Telefon</strong><a href="tel:${booking.telefon.replace(/\s+/g, "")}">${booking.telefon}</a></li>
+        </ul>
+        <div class="actions">
+          <a class="cta primary" href="${mapLink(booking.nav)}" target="_blank" rel="noreferrer">Navigation starten</a>
+        </div>
+      `;
+    }
+
+    function renderBookingDetails(station) {
+      const card = document.getElementById("bookingDetailsCard");
+      const details = station.booking.details || [];
+      const nextSteps = station.booking.nextSteps || [];
+      const images = station.images || [];
+
+      const detailsHtml = details
+        .map(entry => `<li class="item"><strong>${entry.label}</strong>${entry.value}</li>`)
+        .join("");
+
+      const stepsHtml = nextSteps
+        .map(step => `<li class="item">${step}</li>`)
+        .join("");
+
+      const imagesHtml = images
+        .map(image => `
+          <figure>
+            <img src="${image.src}" alt="${image.caption}" loading="lazy" />
+            <figcaption>${image.caption}</figcaption>
+          </figure>
+        `)
+        .join("");
+
+      card.innerHTML = `
+        <h3>${station.name}: Relevante Buchungsdetails</h3>
+        <ul class="list">${detailsHtml}</ul>
+        <p class="section-label" style="margin-top:12px;">Nächste Schritte</p>
+        <ul class="list">${stepsHtml}</ul>
+        <p class="section-label" style="margin-top:12px;">Unterkunftsbilder</p>
+        <div class="gallery">${imagesHtml}</div>
+      `;
+    }
+
+    function renderRoutePlan() {
+      const routeTimeline = document.getElementById("routeTimeline");
+      const routeSummary = document.getElementById("routeSummary");
+
+      const totalKm = routeLegs.reduce((sum, leg) => sum + leg.km, 0);
+
+      routeTimeline.innerHTML = routeLegs
+        .map(leg => {
+          const noteText = leg.note ? ` (${leg.note})` : "";
+          return `<li><strong>${leg.date}</strong> ${leg.from} → ${leg.to} · ${leg.km} km · ${leg.driveTime}${noteText}</li>`;
+        })
+        .join("");
+
+      routeSummary.textContent = `Gesamtdistanz: ${totalKm.toLocaleString("de-DE")} km.`;
+    }
+
+    function renderTips(station) {
+      const list = document.getElementById("tipsList");
+      list.innerHTML = "";
+      const tipLightbox = document.getElementById("tipLightbox");
+      const tipLightboxImage = document.getElementById("tipLightboxImage");
+      const tipLightboxCaption = document.getElementById("tipLightboxCaption");
+
+      const visibleTips = station.tips.filter(tip => {
+        if (tipsMode === "classic") return tip.level === "classic";
+        return tip.level !== "classic";
+      });
+
+      visibleTips.forEach(tip => {
+        const query = tip.mapQuery || `${tip.title}, ${station.name}`;
+        const fit = tip.fit ? `<p class="mini"><strong>Kriterium:</strong> ${tip.fit}</p>` : "";
+        const levelChip = tip.level === "classic"
+          ? '<span class="chip classic">Optionale Klassiker</span>'
+          : '<span class="chip">Primärtipp</span>';
+        const tipImage = tip.image
+          ? `<div class="tip-image"><img src="${tip.image}" alt="${tip.title}" loading="lazy" /></div>`
+          : "";
+        const li = document.createElement("li");
+        li.className = "item";
+        li.innerHTML = `
+          <strong>${tip.title}</strong>
+          <p class="mini">${tip.note}</p>
+          ${fit}
+          <div class="tip-meta">${levelChip}</div>
+          ${tipImage}
+          <div class="actions">
+            <a class="cta primary" href="${mapLink(query)}" target="_blank" rel="noreferrer">Route zum Tipp</a>
+            <a class="cta external-link" href="${tip.infoUrl || infoLink(`${tip.title} ${station.name}`)}" target="_blank" rel="noreferrer">Mehr Infos</a>
+            ${tip.image ? '<button class="cta" type="button" data-open-image="1">Bild groß</button>' : ''}
+          </div>
+        `;
+
+        const openBtn = li.querySelector("[data-open-image='1']");
+        if (openBtn) {
+          openBtn.addEventListener("click", () => {
+            tipLightboxImage.src = tip.image;
+            tipLightboxCaption.textContent = tip.title;
+            tipLightbox.classList.add("open");
+            tipLightbox.setAttribute("aria-hidden", "false");
+          });
+        }
+
+        list.appendChild(li);
+      });
+
+      document.getElementById("tipsPrimary").classList.toggle("active", tipsMode === "primary");
+      document.getElementById("tipsClassic").classList.toggle("active", tipsMode === "classic");
+    }
+
+    function renderGallery(station) {
+      const gallery = document.getElementById("stationGallery");
+      gallery.innerHTML = "";
+      station.images.forEach(image => {
+        const figure = document.createElement("figure");
+        figure.innerHTML = `
+          <img src="${image.src}" alt="${image.caption}" loading="lazy" />
+          <figcaption>${image.caption}</figcaption>
+        `;
+        gallery.appendChild(figure);
+      });
+    }
+
+    function renderContacts() {
+      const list = document.getElementById("contactList");
+      list.innerHTML = "";
+      contacts.forEach(contact => {
+        const li = document.createElement("li");
+        li.className = "item";
+        li.innerHTML = `
+          <strong>${contact.title}</strong>
+          ${contact.info}<br />
+          <a href="tel:${contact.phone.replace(/\s+/g, "")}">${contact.phone}</a>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function renderAllStationBlocks() {
+      renderStationTabs("stationTabsBookings");
+      renderStationTabs("stationTabsTips");
+      const station = stationById(activeStationId);
+      applyStationTheme(station);
+      renderBookingCard(station);
+      renderBookingDetails(station);
+      renderTips(station);
+      renderGallery(station);
+    }
+
+    function activatePanel(panelId) {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.panel === panelId);
+      });
+      document.querySelectorAll(".panel").forEach(panel => {
+        panel.classList.toggle("active", panel.id === panelId);
+      });
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => activatePanel(tab.dataset.panel));
+    });
+
+    document.querySelectorAll("[data-jump]").forEach(btn => {
+      btn.addEventListener("click", () => activatePanel(btn.dataset.jump));
+    });
+
+    document.getElementById("tipsPrimary").addEventListener("click", () => {
+      tipsMode = "primary";
+      renderTips(stationById(activeStationId));
+    });
+
+    document.getElementById("tipsClassic").addEventListener("click", () => {
+      tipsMode = "classic";
+      renderTips(stationById(activeStationId));
+    });
+
+    const tipLightbox = document.getElementById("tipLightbox");
+    const tipLightboxClose = document.getElementById("tipLightboxClose");
+
+    tipLightboxClose.addEventListener("click", () => {
+      tipLightbox.classList.remove("open");
+      tipLightbox.setAttribute("aria-hidden", "true");
+    });
+
+    tipLightbox.addEventListener("click", event => {
+      if (event.target === tipLightbox) {
+        tipLightbox.classList.remove("open");
+        tipLightbox.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    renderRoutePlan();
+    renderContacts();
+    renderAllStationBlocks();
+
+    if ("serviceWorker" in navigator) {
+      let activeRegistration;
+      const updateBar = document.getElementById("updateBar");
+      const applyUpdate = document.getElementById("applyUpdate");
+
+      function showUpdateBar() {
+        updateBar.style.display = "flex";
+      }
+
+      function checkWaitingWorker(registration) {
+        if (registration.waiting) {
+          showUpdateBar();
+        }
+      }
+
+      navigator.serviceWorker.register("./service-worker.js").then(registration => {
+        activeRegistration = registration;
+        checkWaitingWorker(registration);
+
+        registration.addEventListener("updatefound", () => {
+          const worker = registration.installing;
+          if (!worker) return;
+          worker.addEventListener("statechange", () => {
+            if (worker.state === "installed" && navigator.serviceWorker.controller) {
+              showUpdateBar();
+            }
+          });
+        });
+      });
+
+      applyUpdate.addEventListener("click", () => {
+        if (!activeRegistration) return;
+
+        activeRegistration.update().then(() => {
+          if (activeRegistration.waiting) {
+            activeRegistration.waiting.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        window.location.reload();
+      });
+    }
+  </script>
+</body>
+</html>
