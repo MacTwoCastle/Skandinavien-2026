@@ -1,4 +1,4 @@
-const CACHE_NAME = "skandi-2026-v2";
+const CACHE_NAME = "skandi-2026-v3";
 const CORE = [
   "./",
   "./index.html",
@@ -9,16 +9,16 @@ const CORE = [
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
   "./icons/icon.svg",
-  "../Reiseroute%20(Google%20Maps).png",
-  "../Oeresundbruecke.jpg",
-  "../L%C3%BCbeck/117219042.jpg",
-  "../L%C3%BCbeck/464668659.jpg",
-  "../Kopenhagen/183496537.jpg",
-  "../Kopenhagen/233219480.jpg",
-  "../G%C3%B6teborg/729899465.jpg",
-  "../G%C3%B6teborg/731736193.jpg",
-  "../Blokhus/House%20Amina%20-%20Blokhus.jpg",
-  "../Blokhus/House%20Amina%20-%20Meeresblick.jpg"
+  "./Reiseroute%20(Google%20Maps).jpg",
+  "./Oeresundbruecke.jpg",
+  "./L%C3%BCbeck/117219042.jpg",
+  "./L%C3%BCbeck/464668659.jpg",
+  "./Kopenhagen/183496537.jpg",
+  "./Kopenhagen/233219480.jpg",
+  "./G%C3%B6teborg/729899465.jpg",
+  "./G%C3%B6teborg/731736193.jpg",
+  "./Blokhus/House%20Amina%20-%20Blokhus.jpg",
+  "./Blokhus/House%20Amina%20-%20Meeresblick.jpg"
 ];
 
 self.addEventListener("install", event => {
