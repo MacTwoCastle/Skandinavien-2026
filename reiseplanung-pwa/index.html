@@ -305,6 +305,52 @@
       border-color: var(--accent-deep);
     }
 
+    .tips-master {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .tips-list .item {
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .tip-pick {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .tip-pick.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft);
+    }
+
+    .tip-detail {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .tip-detail h4 {
+      margin: 0;
+      color: var(--station-ink);
+    }
+
+    .tip-detail .sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
     .tip-image {
       margin-top: 8px;
     }
@@ -501,6 +547,10 @@
       .gallery img {
         height: 110px;
       }
+
+      .tips-master {
+        grid-template-columns: 0.9fr 1.1fr;
+      }
     }
 
     @keyframes rise {
@@ -611,14 +661,17 @@
       <div class="station-scroll" id="stationTabsTips" aria-label="Stationen Tipps"></div>
       <div class="grid">
         <article class="card">
-          <h3>Top-Tipps</h3>
-          <div class="tip-filter" role="group" aria-label="Tipp-Ebene">
-            <button id="tipsPrimary" class="active" type="button">Primärtipps</button>
-            <button id="tipsClassic" type="button">Optionale Klassiker</button>
+          <h3>Reisetipps</h3>
+          <div class="tip-filter" role="group" aria-label="Reisetipp-Bereich">
+            <button id="tipsSightseeing" class="active" type="button">Sehenswürdigkeiten und Aktivitäten</button>
+            <button id="tipsCulinary" type="button">Kulinarische Empfehlungen</button>
           </div>
-          <ul class="list" id="tipsList"></ul>
+          <div class="tips-master">
+            <ul class="list tips-list" id="tipsList"></ul>
+            <article class="tip-detail" id="tipDetailCard"></article>
+          </div>
           <div class="daytrip-card" id="dayTripCard" hidden></div>
-          <p class="hint">Primärtipps und optionale Klassiker sind jetzt vollständig getrennt dargestellt.</p>
+          <p class="hint">Tipps sind in Orte/Aktivitäten und Kulinarik geteilt. Ein Klick zeigt die ausführlichen Details mit Links.</p>
         </article>
         <article class="card">
           <h3>Bilder zur Station</h3>
@@ -697,6 +750,26 @@
           { level: "classic", title: "Holstentor", note: "Ikonischer Klassiker, optional bei ausreichend Zeit.", fit: "Optionaler Klassiker", mapQuery: "Holstentor Lübeck" },
           { level: "classic", title: "Lübecker Rathaus", note: "Historischer Kernspot in der Altstadt.", fit: "Optionaler Klassiker", mapQuery: "Lübecker Rathaus" }
         ],
+        culinary: [
+          {
+            title: "Restaurant Schiffergesellschaft",
+            note: "Hanseatische Tradition, norddeutsche Küche und viel Lübeck-Charakter.",
+            address: "Breite Straße 2, 23552 Lübeck",
+            arrival: "Gut per Fahrrad aus der Altstadt, alternativ per Auto.",
+            reservation: "+49 451 76 776",
+            website: "https://www.schiffergesellschaft.de/",
+            mapQuery: "Breite Straße 2, 23552 Lübeck"
+          },
+          {
+            title: "Café Niederegger (Backup)",
+            note: "Lübecker Institution für regionale Konditorei-Spezialitäten.",
+            address: "Breite Straße 89, 23552 Lübeck",
+            arrival: "Zentral gelegen, per Fahrrad sehr gut erreichbar.",
+            reservation: "+49 451 53 01 126",
+            website: "https://www.niederegger.de/cafe-niederegger/",
+            mapQuery: "Breite Straße 89, 23552 Lübeck"
+          }
+        ],
         images: [
           { src: "../L%C3%BCbeck/117219042.jpg", caption: "Lübeck Unterkunft" },
           { src: "../L%C3%BCbeck/464668659.jpg", caption: "Lübeck Zimmer" }
@@ -746,6 +819,35 @@
           { level: "classic", title: "Nyhavn", note: "Bekanntes Hafenviertel als optionaler Klassiker.", fit: "Optionaler Klassiker", mapQuery: "Nyhavn Kopenhagen" },
           { level: "classic", title: "Schloss Rosenborg", note: "Renaissance-Schloss als klassischer Kulturpunkt.", fit: "Optionaler Klassiker", mapQuery: "Rosenborg Castle" }
         ],
+        culinary: [
+          {
+            title: "Restaurant Kronborg",
+            note: "Klassische dänische Küche (Smørrebrød), lokal verankert mit guter Preis-Leistung.",
+            address: "Brolæggerstræde 12, 1211 København K",
+            arrival: "Zentral, gut per Fahrrad; Auto nur als Ausweichoption.",
+            reservation: "+45 33 13 07 08",
+            website: "https://restaurantkronborg.dk/",
+            mapQuery: "Brolæggerstræde 12, 1211 København K"
+          },
+          {
+            title: "Restaurant Puk",
+            note: "Traditionelle dänische Küche im historischen Ambiente.",
+            address: "Vandkunsten 8, 1467 Kbh K, Dänemark",
+            arrival: "Sehr gut per Fahrrad erreichbar.",
+            reservation: "+45 33 11 14 17",
+            website: "https://www.restaurantpuk.dk/",
+            mapQuery: "Vandkunsten 8, 1467 Kbh K"
+          },
+          {
+            title: "Det lille Apotek (Backup)",
+            note: "Traditionsreiche dänische Küche mit klassischem Smørrebrød.",
+            address: "Store Kannikestræde 15, 1169 København",
+            arrival: "Zentral in der Innenstadt, per Fahrrad sehr gut.",
+            reservation: "+45 33 12 56 06",
+            website: "https://detlilleapotek.dk/",
+            mapQuery: "Store Kannikestræde 15, 1169 København"
+          }
+        ],
         images: [
           { src: "../Kopenhagen/183496537.jpg", caption: "Kopenhagen Unterkunft" },
           { src: "../Kopenhagen/233219480.jpg", caption: "Kopenhagen Zimmer" }
@@ -794,6 +896,53 @@
           { level: "primary", title: "Keillers Park", note: "Aussichtspunkt mit starkem Blick über den Hafen.", fit: "Wenig Mainstream", mapQuery: "Keillers Park Göteborg" },
           { level: "classic", title: "Haga", note: "Bekanntes Altstadtviertel als optionaler Klassiker.", fit: "Optionaler Klassiker", mapQuery: "Haga Göteborg" },
           { level: "classic", title: "Skansen Kronan", note: "Festungsanlage mit klassischer Aussicht.", fit: "Optionaler Klassiker", mapQuery: "Skansen Kronan" }
+        ],
+        culinary: [
+          {
+            title: "Restaurang Kometen",
+            note: "Klassische schwedische Küche (Husmanskost) mit lokaler Tradition.",
+            address: "Vasagatan 58, 411 37 Göteborg",
+            arrival: "Gut per Fahrrad erreichbar, Parken mit Auto in der Umgebung möglich.",
+            reservation: "+46 31 13 79 88",
+            website: "https://www.restaurangkometen.se/",
+            mapQuery: "Vasagatan 58, 411 37 Göteborg"
+          },
+          {
+            title: "Sjöbaren Haga",
+            note: "Regionaler Fokus auf Fisch/Meeresküche im charaktervollen Haga-Viertel.",
+            address: "Haga Nygatan 25, 413 01 Göteborg",
+            arrival: "Sehr gut per Fahrrad; Auto als Notfalloption.",
+            reservation: "+46 31 711 97 80",
+            website: "https://www.sjobaren.se/",
+            mapQuery: "Haga Nygatan 25, 413 01 Göteborg"
+          },
+          {
+            title: "Sjöbaren Lorensberg (Backup)",
+            note: "Alternative mit gleicher regionaler Fischküche, oft abends besser verfügbar.",
+            address: "Lorensbergsgatan 14, 411 36 Göteborg",
+            arrival: "Per Fahrrad gut erreichbar, Auto in Parkhäusern der Innenstadt möglich.",
+            reservation: "+46 31 711 97 80",
+            website: "https://www.sjobaren.se/",
+            mapQuery: "Lorensbergsgatan 14, 411 36 Göteborg"
+          },
+          {
+            title: "Isbolaget (Donsö)",
+            note: "Schären-Geheimtipp mit lokaler Küche und Hafencharakter.",
+            address: "Donsö Hamnväg 45, 430 82 Donsö",
+            arrival: "Bis Saltholmen, dann Fähre nach Donsö.",
+            reservation: "+46 31 97 27 00",
+            website: "http://www.isbolaget.com/",
+            mapQuery: "Donsö Hamnväg 45, 430 82 Donsö"
+          },
+          {
+            title: "Knarrholmens Restaurang",
+            note: "Maritime Küche auf autofreier Schäreninsel mit starker lokaler Prägung.",
+            address: "Knarrholmen, südliche Schären vor Göteborg",
+            arrival: "Bis Saltholmen, danach Fähre (ca. 15 Minuten) nach Knarrholmen.",
+            reservation: "+46 31 797 91 50",
+            website: "https://knarrholmen.se/",
+            mapQuery: "Knarrholmen Göteborg"
+          }
         ],
         dayTrip: {
           title: "Ausflugsvorschlag: Schären-Tag ab Saltholmen",
@@ -857,6 +1006,26 @@
           { level: "classic", title: "Blokhus Strand", note: "Breiter Sandstrand als klassischer Küsten-Spot.", fit: "Optionaler Klassiker", mapQuery: "Blokhus Strand" },
           { level: "classic", title: "Løkken", note: "Charmantes Küstenstädtchen als Ausflugsklassiker.", fit: "Optionaler Klassiker", mapQuery: "Løkken Denmark" }
         ],
+        culinary: [
+          {
+            title: "Restaurant Futten",
+            note: "Lokale Verankerung in Blokhus mit regionalem Einschlag und entspannter Atmosphäre.",
+            address: "Høkervej 2, 9492 Blokhus",
+            arrival: "Sehr gut per Fahrrad aus Blokhus, alternativ mit dem Auto.",
+            reservation: "+45 98 24 82 03",
+            website: "https://futten.dk/",
+            mapQuery: "Høkervej 2, 9492 Blokhus"
+          },
+          {
+            title: "Restaurant Salino (Backup)",
+            note: "Solide Alternative im mittleren Budget mit entspannter Atmosphäre.",
+            address: "Høkervej 2, 9492 Blokhus",
+            arrival: "Per Fahrrad und Auto gut erreichbar.",
+            reservation: "+45 40 40 11 80",
+            website: "https://salino.dk/",
+            mapQuery: "Høkervej 2, 9492 Blokhus"
+          }
+        ],
         images: [
           { src: "../Blokhus/House%20Amina%20-%20Blokhus.jpg", caption: "Haus Amina" },
           { src: "../Blokhus/House%20Amina%20-%20Meeresblick.jpg", caption: "Meeresblick" }
@@ -872,7 +1041,8 @@
     ];
 
     let activeStationId = stations[0].id;
-    let tipsMode = "primary";
+    let tipsCategory = "sightseeing";
+    const tipSelection = {};
 
     function isAppleDevice() {
       const ua = navigator.userAgent || "";
@@ -889,6 +1059,42 @@
 
     function infoLink(query) {
       return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    }
+
+    function tipSelectionKey(stationId, category) {
+      return `${stationId}:${category}`;
+    }
+
+    function categoryLabel(category) {
+      return category === "culinary"
+        ? "Kulinarische Empfehlungen"
+        : "Sehenswürdigkeiten und Aktivitäten";
+    }
+
+    function normalizeTip(tip, station, category, index) {
+      return {
+        id: tip.id || `${category}-${index}-${tip.title}`,
+        title: tip.title,
+        note: tip.note || "",
+        fit: tip.fit || "",
+        longDescription: tip.longDescription || "",
+        address: tip.address || "",
+        arrival: tip.arrival || "",
+        reservation: tip.reservation || "",
+        website: tip.website || "",
+        mapQuery: tip.mapQuery || `${tip.title}, ${station.name}`,
+        infoUrl: tip.infoUrl || "",
+        bookingUrl: tip.bookingUrl || "",
+        image: tip.image || "",
+        level: tip.level || ""
+      };
+    }
+
+    function tipsForCategory(station, category) {
+      if (category === "culinary") {
+        return (station.culinary || []).map((tip, index) => normalizeTip(tip, station, category, index));
+      }
+      return (station.tips || []).map((tip, index) => normalizeTip(tip, station, category, index));
     }
 
     function stationById(id) {
@@ -1003,56 +1209,93 @@
 
     function renderTips(station) {
       const list = document.getElementById("tipsList");
+      const detailCard = document.getElementById("tipDetailCard");
       const dayTripCard = document.getElementById("dayTripCard");
       list.innerHTML = "";
       const tipLightbox = document.getElementById("tipLightbox");
       const tipLightboxImage = document.getElementById("tipLightboxImage");
       const tipLightboxCaption = document.getElementById("tipLightboxCaption");
 
-      const visibleTips = station.tips.filter(tip => {
-        if (tipsMode === "classic") return tip.level === "classic";
-        return tip.level !== "classic";
-      });
+      const visibleTips = tipsForCategory(station, tipsCategory);
+      const selectionKey = tipSelectionKey(station.id, tipsCategory);
+      if (!tipSelection[selectionKey] && visibleTips.length > 0) {
+        tipSelection[selectionKey] = visibleTips[0].id;
+      }
+      const selectedTip = visibleTips.find(tip => tip.id === tipSelection[selectionKey]) || visibleTips[0];
 
-      visibleTips.forEach(tip => {
-        const query = tip.mapQuery || `${tip.title}, ${station.name}`;
-        const fit = tip.fit ? `<p class="mini"><strong>Kriterium:</strong> ${tip.fit}</p>` : "";
-        const levelChip = tip.level === "classic"
-          ? '<span class="chip classic">Optionale Klassiker</span>'
-          : '<span class="chip">Primärtipp</span>';
-        const tipImage = tip.image
-          ? `<div class="tip-image"><img src="${tip.image}" alt="${tip.title}" loading="lazy" /></div>`
+      if (visibleTips.length === 0) {
+        list.innerHTML = `<li class="item">Für diese Kategorie sind aktuell noch keine Einträge hinterlegt.</li>`;
+        detailCard.innerHTML = `<p class="muted">${categoryLabel(tipsCategory)}: keine Detaildaten vorhanden.</p>`;
+      } else {
+        visibleTips.forEach(tip => {
+          const li = document.createElement("li");
+          li.className = "item";
+          li.innerHTML = `
+            <button class="tip-pick${selectedTip && selectedTip.id === tip.id ? " active" : ""}" type="button" data-tip-id="${tip.id}">
+              <strong>${tip.title}</strong>
+              <p class="mini">${tip.note}</p>
+            </button>
+          `;
+          const pick = li.querySelector("button");
+          pick.addEventListener("click", () => {
+            tipSelection[selectionKey] = tip.id;
+            renderTips(station);
+          });
+          list.appendChild(li);
+        });
+
+        const fitHtml = selectedTip.fit ? `<p class="mini"><strong>Kriterium:</strong> ${selectedTip.fit}</p>` : "";
+        const longHtml = selectedTip.longDescription ? `<p class="mini">${selectedTip.longDescription}</p>` : "";
+        const levelHtml = selectedTip.level === "classic"
+          ? '<div class="tip-meta"><span class="chip classic">Optionaler Klassiker</span></div>'
           : "";
-        const li = document.createElement("li");
-        li.className = "item";
-        li.innerHTML = `
-          <strong>${tip.title}</strong>
-          <p class="mini">${tip.note}</p>
-          ${fit}
-          <div class="tip-meta">${levelChip}</div>
-          ${tipImage}
-          <div class="actions">
-            <a class="cta primary" href="${mapLink(query)}" target="_blank" rel="noreferrer">Route zum Tipp</a>
-            <a class="cta external-link" href="${tip.infoUrl || infoLink(`${tip.title} ${station.name}`)}" target="_blank" rel="noreferrer">Mehr Infos</a>
-            ${tip.image ? '<button class="cta" type="button" data-open-image="1">Bild groß</button>' : ''}
+        const detailRows = [
+          selectedTip.address ? `<li class="item"><strong>Adresse</strong>${selectedTip.address}</li>` : "",
+          selectedTip.arrival ? `<li class="item"><strong>Anreise</strong>${selectedTip.arrival}</li>` : "",
+          selectedTip.reservation ? `<li class="item"><strong>Kontakt/Reservierung</strong>${selectedTip.reservation}</li>` : ""
+        ].filter(Boolean).join("");
+
+        const infoHref = selectedTip.infoUrl || infoLink(`${selectedTip.title} ${station.name}`);
+        const websiteBtn = selectedTip.website
+          ? `<a class="cta external-link" href="${selectedTip.website}" target="_blank" rel="noreferrer">Website</a>`
+          : "";
+        const bookingBtn = selectedTip.bookingUrl
+          ? `<a class="cta primary external-link" href="${selectedTip.bookingUrl}" target="_blank" rel="noreferrer">Direkt buchen</a>`
+          : "";
+        const imageBtn = selectedTip.image
+          ? '<button class="cta" type="button" data-open-image="1">Bild groß</button>'
+          : "";
+
+        detailCard.innerHTML = `
+          <h4>${selectedTip.title}</h4>
+          <p class="sub">${categoryLabel(tipsCategory)}</p>
+          <p class="mini">${selectedTip.note}</p>
+          ${fitHtml}
+          ${longHtml}
+          ${levelHtml}
+          ${detailRows ? `<ul class="list" style="margin-top:8px;">${detailRows}</ul>` : ""}
+          <div class="actions" style="margin-top:10px;">
+            <a class="cta primary" href="${mapLink(selectedTip.mapQuery)}" target="_blank" rel="noreferrer">Route zum Tipp</a>
+            <a class="cta external-link" href="${infoHref}" target="_blank" rel="noreferrer">Mehr Infos</a>
+            ${websiteBtn}
+            ${bookingBtn}
+            ${imageBtn}
           </div>
         `;
 
-        const openBtn = li.querySelector("[data-open-image='1']");
-        if (openBtn) {
+        const openBtn = detailCard.querySelector("[data-open-image='1']");
+        if (openBtn && selectedTip.image) {
           openBtn.addEventListener("click", () => {
-            tipLightboxImage.src = tip.image;
-            tipLightboxCaption.textContent = tip.title;
+            tipLightboxImage.src = selectedTip.image;
+            tipLightboxCaption.textContent = selectedTip.title;
             tipLightbox.classList.add("open");
             tipLightbox.setAttribute("aria-hidden", "false");
           });
         }
-
-        list.appendChild(li);
-      });
+      }
 
       const dayTrip = station.dayTrip;
-      if (dayTrip) {
+      if (dayTrip && tipsCategory === "sightseeing") {
         const stepsHtml = (dayTrip.steps || [])
           .map(step => `<li class="item">${step}</li>`)
           .join("");
@@ -1067,8 +1310,8 @@
         dayTripCard.innerHTML = "";
       }
 
-      document.getElementById("tipsPrimary").classList.toggle("active", tipsMode === "primary");
-      document.getElementById("tipsClassic").classList.toggle("active", tipsMode === "classic");
+      document.getElementById("tipsSightseeing").classList.toggle("active", tipsCategory === "sightseeing");
+      document.getElementById("tipsCulinary").classList.toggle("active", tipsCategory === "culinary");
     }
 
     function renderGallery(station) {
@@ -1127,13 +1370,13 @@
       btn.addEventListener("click", () => activatePanel(btn.dataset.jump));
     });
 
-    document.getElementById("tipsPrimary").addEventListener("click", () => {
-      tipsMode = "primary";
+    document.getElementById("tipsSightseeing").addEventListener("click", () => {
+      tipsCategory = "sightseeing";
       renderTips(stationById(activeStationId));
     });
 
-    document.getElementById("tipsClassic").addEventListener("click", () => {
-      tipsMode = "classic";
+    document.getElementById("tipsCulinary").addEventListener("click", () => {
+      tipsCategory = "culinary";
       renderTips(stationById(activeStationId));
     });
 
