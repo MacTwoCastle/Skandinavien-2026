@@ -342,6 +342,14 @@
       gap: 8px;
     }
 
+    .tip-pick-tags {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
     .tip-selected {
       display: inline-flex;
       align-items: center;
@@ -352,6 +360,20 @@
       border-radius: 999px;
       padding: 1px 8px;
       background: #fff;
+    }
+
+    .tip-badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.72rem;
+      border: 1px solid var(--accent);
+      color: var(--accent-deep);
+      border-radius: 999px;
+      padding: 1px 8px;
+      background: color-mix(in srgb, var(--accent-soft) 50%, #fff 50%);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
     }
 
     .tip-detail {
@@ -1322,7 +1344,10 @@
             <button class="tip-pick${isSelected ? " active" : ""}" type="button" data-tip-id="${tip.id}">
               <div class="tip-pick-head">
                 <strong>${tip.title}</strong>
-                ${isSelected ? '<span class="tip-selected">● Ausgewählt</span>' : ""}
+                <span class="tip-pick-tags">
+                  ${(tip.itinerary || []).length ? '<span class="tip-badge">Tagesplan</span>' : ""}
+                  ${isSelected ? '<span class="tip-selected">● Ausgewählt</span>' : ""}
+                </span>
               </div>
               <p class="mini">${tip.note}</p>
             </button>
