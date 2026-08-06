@@ -760,7 +760,6 @@
             <ul class="list tips-list" id="tipsList"></ul>
             <article class="tip-detail" id="tipDetailCard"></article>
           </div>
-          <div class="daytrip-card" id="dayTripCard" hidden></div>
           <p class="hint">Tipps sind in Orte/Aktivitäten und Kulinarik geteilt. Ein Klick zeigt die ausführlichen Details mit Links.</p>
         </article>
       </div>
@@ -970,6 +969,25 @@
           ]
         },
         tips: [
+          {
+            level: "primary",
+            title: "Schären-Tag ab Saltholmen",
+            note: "Tagesvorschlag mit Fähren, Inselzeit und Rückfahrt als klarer Ablauf.",
+            fit: "Tagesausflug, wenig Mainstream",
+            longDescription: "Beispielablauf für einen Urlaubstag in Göteborg (z.B. 14.08.).",
+            address: "Saltholmen, Göteborg",
+            arrival: "Per Tram oder Fahrrad nach Saltholmen, dann weiter mit öffentlichen Fähren.",
+            mapQuery: "Saltholmen Göteborg",
+            itinerary: [
+              "09:30 Start in Göteborg, Anfahrt mit Fahrrad oder Auto nach Saltholmen.",
+              "10:15 Fährüberfahrt in die südlichen Schären (z.B. Donsö oder Knarrholmen).",
+              "11:00-13:00 Inselspaziergang am Wasser und durch den Hafenbereich.",
+              "13:00 Mittagessen in Isbolaget (Donsö) oder Knarrholmens Restaurang (Knarrholmen), idealerweise mit Reservierung.",
+              "15:00-17:00 Zeit für Fika, Badestellen oder ruhige Küstenwege.",
+              "Ab 17:00 Rückfahrt per Fähre nach Saltholmen und zurück zur Unterkunft.",
+              "Für die Fähren einen Zeitpuffer einplanen, da Takte saisonal variieren können."
+            ]
+          },
           { level: "primary", title: "Klippan Kulturreservat", note: "Historisches Hafenviertel mit Cafés und lokaler Stimmung.", fit: "Lokal-Favorit, wenig Mainstream", address: "Klippan, Göteborg", arrival: "Per Fahrrad entlang des Wassers oder per Tram.", mapQuery: "Klippan Kulturreservat Göteborg" },
           { level: "primary", title: "Styrsö", note: "Autofreie Schäreninsel mit kleinen Buchten und ruhigen Wegen.", fit: "Wenig Mainstream", longDescription: "Südliche Schäreninseln mit stark lokalem Inselgefühl, deutlich abseits vom Massentourismus.", address: "Südliche Schären ab Saltholmen", arrival: "Tram/Fahrrad bis Saltholmen, dann öffentliche Fähren.", mapQuery: "Styrsö Göteborg" },
           { level: "primary", title: "Vrångö", note: "Südlichste bewohnte Insel mit viel Natur und Wanderwegen.", fit: "Wenig Mainstream", longDescription: "Südliche Schäreninseln mit stark lokalem Inselgefühl, deutlich abseits vom Massentourismus.", address: "Südliche Schären ab Saltholmen", arrival: "Tram/Fahrrad bis Saltholmen, dann öffentliche Fähren.", mapQuery: "Vrångö Göteborg" },
@@ -1025,19 +1043,6 @@
             mapQuery: "Knarrholmen Göteborg"
           }
         ],
-        dayTrip: {
-          title: "Ausflugsvorschlag: Schären-Tag ab Saltholmen",
-          subtitle: "Beispielablauf für einen Urlaubstag in Göteborg (z.B. 14.08.)",
-          steps: [
-            "09:30 Start in Göteborg, Anfahrt mit Fahrrad oder Auto nach Saltholmen.",
-            "10:15 Fährüberfahrt in die südlichen Schären (z.B. Donsö oder Knarrholmen).",
-            "11:00-13:00 Inselspaziergang am Wasser und durch den Hafenbereich.",
-            "13:00 Mittagessen in Isbolaget (Donsö) oder Knarrholmens Restaurang (Knarrholmen), idealerweise mit Reservierung.",
-            "15:00-17:00 Zeit für Fika, Badestellen oder ruhige Küstenwege.",
-            "Ab 17:00 Rückfahrt per Fähre nach Saltholmen und zurück zur Unterkunft.",
-            "Für die Fähren einen Zeitpuffer einplanen, da Takte saisonal variieren können."
-          ]
-        },
         images: [
           { src: "../G%C3%B6teborg/729899465.jpg", caption: "Göteborg Unterkunft" },
           { src: "../G%C3%B6teborg/731736193.jpg", caption: "Göteborg Wohnbereich" }
@@ -1167,6 +1172,7 @@
         infoUrl: tip.infoUrl || "",
         bookingUrl: tip.bookingUrl || "",
         image: tip.image || "",
+        itinerary: tip.itinerary || [],
         level: tip.level || ""
       };
     }
@@ -1292,7 +1298,6 @@
       const { animateDetail = false, scrollToDetail = false } = options;
       const list = document.getElementById("tipsList");
       const detailCard = document.getElementById("tipDetailCard");
-      const dayTripCard = document.getElementById("dayTripCard");
       list.innerHTML = "";
       const tipLightbox = document.getElementById("tipLightbox");
       const tipLightboxImage = document.getElementById("tipLightboxImage");
@@ -1335,6 +1340,12 @@
 
         const fitHtml = selectedTip.fit ? `<p class="mini"><strong>Kriterium:</strong> ${selectedTip.fit}</p>` : "";
         const longHtml = selectedTip.longDescription ? `<p class="mini">${selectedTip.longDescription}</p>` : "";
+        const itineraryHtml = (selectedTip.itinerary || []).length
+          ? `
+            <p class="section-label" style="margin-top:10px;">Tagesablauf</p>
+            <ul class="list" style="margin-top:6px;">${selectedTip.itinerary.map(step => `<li class="item">${step}</li>`).join("")}</ul>
+          `
+          : "";
         const levelHtml = selectedTip.level === "classic"
           ? '<div class="tip-meta"><span class="chip classic">Optionaler Klassiker</span></div>'
           : "";
@@ -1362,6 +1373,7 @@
           <p class="mini">${selectedTip.note}</p>
           ${fitHtml}
           ${longHtml}
+          ${itineraryHtml}
           ${levelHtml}
           ${detailRows ? `<ul class="list" style="margin-top:8px;">${detailRows}</ul>` : ""}
           <div class="actions" style="margin-top:10px;">
@@ -1391,22 +1403,6 @@
             tipLightbox.setAttribute("aria-hidden", "false");
           });
         }
-      }
-
-      const dayTrip = station.dayTrip;
-      if (dayTrip && tipsCategory === "sightseeing") {
-        const stepsHtml = (dayTrip.steps || [])
-          .map(step => `<li class="item">${step}</li>`)
-          .join("");
-        dayTripCard.hidden = false;
-        dayTripCard.innerHTML = `
-          <h4>${dayTrip.title}</h4>
-          <p class="mini">${dayTrip.subtitle || ""}</p>
-          <ul class="list">${stepsHtml}</ul>
-        `;
-      } else {
-        dayTripCard.hidden = true;
-        dayTripCard.innerHTML = "";
       }
 
       document.getElementById("tipsSightseeing").classList.toggle("active", tipsCategory === "sightseeing");
