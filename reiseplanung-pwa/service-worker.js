@@ -1,9 +1,10 @@
-const CACHE_NAME = "skandi-2026-v4";
+const CACHE_NAME = "skandi-2026-v5";
 const CORE = [
   "./",
   "./index.html",
   "./app.webmanifest",
   "./ANFORDERUNGEN.md",
+  "../Reiseplanung.pdf",
   "./service-worker.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
