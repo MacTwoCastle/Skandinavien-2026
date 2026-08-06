@@ -452,6 +452,39 @@
       opacity: 0.8;
     }
 
+    .route-image {
+      margin-top: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .route-image img {
+      width: 100%;
+      display: block;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .route-image figcaption {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .daytrip-card {
+      margin-top: 12px;
+      border-top: 1px dashed var(--line);
+      padding-top: 12px;
+    }
+
+    .daytrip-card h4 {
+      margin: 0 0 6px;
+      color: var(--station-ink);
+      font-size: 1rem;
+    }
+
     @media (min-width: 860px) {
       .grid {
         grid-template-columns: 1.1fr 0.9fr;
@@ -506,6 +539,10 @@
           <h2>Routenverlauf</h2>
           <ul class="timeline" id="routeTimeline"></ul>
           <p class="hint" id="routeSummary"></p>
+          <figure class="route-image">
+            <img src="../Reiseroute%20(Google%20Maps).jpg" alt="Routenbild der Skandinavienreise" loading="lazy" />
+            <figcaption>Routenbild (JPG)</figcaption>
+          </figure>
           <div class="actions">
             <a class="cta" href="../Reiseroute%20(Google%20Maps).jpg">Routenbild öffnen</a>
             <button class="cta primary" data-jump="buchungen" type="button">Zu den Buchungen</button>
@@ -580,6 +617,7 @@
             <button id="tipsClassic" type="button">Optionale Klassiker</button>
           </div>
           <ul class="list" id="tipsList"></ul>
+          <div class="daytrip-card" id="dayTripCard" hidden></div>
           <p class="hint">Primärtipps und optionale Klassiker sind jetzt vollständig getrennt dargestellt.</p>
         </article>
         <article class="card">
@@ -757,6 +795,19 @@
           { level: "classic", title: "Haga", note: "Bekanntes Altstadtviertel als optionaler Klassiker.", fit: "Optionaler Klassiker", mapQuery: "Haga Göteborg" },
           { level: "classic", title: "Skansen Kronan", note: "Festungsanlage mit klassischer Aussicht.", fit: "Optionaler Klassiker", mapQuery: "Skansen Kronan" }
         ],
+        dayTrip: {
+          title: "Ausflugsvorschlag: Schären-Tag ab Saltholmen",
+          subtitle: "Beispielablauf für einen Urlaubstag in Göteborg (z.B. 14.08.)",
+          steps: [
+            "09:30 Start in Göteborg, Anfahrt mit Fahrrad oder Auto nach Saltholmen.",
+            "10:15 Fährüberfahrt in die südlichen Schären (z.B. Donsö oder Knarrholmen).",
+            "11:00-13:00 Inselspaziergang am Wasser und durch den Hafenbereich.",
+            "13:00 Mittagessen in Isbolaget (Donsö) oder Knarrholmens Restaurang (Knarrholmen), idealerweise mit Reservierung.",
+            "15:00-17:00 Zeit für Fika, Badestellen oder ruhige Küstenwege.",
+            "Ab 17:00 Rückfahrt per Fähre nach Saltholmen und zurück zur Unterkunft.",
+            "Für die Fähren einen Zeitpuffer einplanen, da Takte saisonal variieren können."
+          ]
+        },
         images: [
           { src: "../G%C3%B6teborg/729899465.jpg", caption: "Göteborg Unterkunft" },
           { src: "../G%C3%B6teborg/731736193.jpg", caption: "Göteborg Wohnbereich" }
@@ -952,6 +1003,7 @@
 
     function renderTips(station) {
       const list = document.getElementById("tipsList");
+      const dayTripCard = document.getElementById("dayTripCard");
       list.innerHTML = "";
       const tipLightbox = document.getElementById("tipLightbox");
       const tipLightboxImage = document.getElementById("tipLightboxImage");
@@ -998,6 +1050,22 @@
 
         list.appendChild(li);
       });
+
+      const dayTrip = station.dayTrip;
+      if (dayTrip) {
+        const stepsHtml = (dayTrip.steps || [])
+          .map(step => `<li class="item">${step}</li>`)
+          .join("");
+        dayTripCard.hidden = false;
+        dayTripCard.innerHTML = `
+          <h4>${dayTrip.title}</h4>
+          <p class="mini">${dayTrip.subtitle || ""}</p>
+          <ul class="list">${stepsHtml}</ul>
+        `;
+      } else {
+        dayTripCard.hidden = true;
+        dayTripCard.innerHTML = "";
+      }
 
       document.getElementById("tipsPrimary").classList.toggle("active", tipsMode === "primary");
       document.getElementById("tipsClassic").classList.toggle("active", tipsMode === "classic");
