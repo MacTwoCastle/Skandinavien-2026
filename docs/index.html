@@ -326,18 +326,64 @@
       padding: 10px;
       text-align: left;
       cursor: pointer;
+      transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
     }
 
     .tip-pick.active {
       border-color: var(--accent);
       box-shadow: 0 0 0 2px var(--accent-soft);
+      background: color-mix(in srgb, var(--accent-soft) 35%, #fff 65%);
+    }
+
+    .tip-pick-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tip-selected {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.74rem;
+      border: 1px solid var(--accent);
+      color: var(--accent-deep);
+      border-radius: 999px;
+      padding: 1px 8px;
+      background: #fff;
     }
 
     .tip-detail {
+      position: relative;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: #fff;
       padding: 12px;
+    }
+
+    .tip-detail::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 4px;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-deep));
+    }
+
+    .tip-detail.flash {
+      animation: detailPulse 520ms ease;
+    }
+
+    .detail-kicker {
+      margin: 0 0 4px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 700;
     }
 
     .tip-detail h4 {
@@ -561,6 +607,15 @@
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+    @keyframes detailPulse {
+      0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+      }
+      100% {
+        box-shadow: 0 0 0 14px rgba(0, 0, 0, 0);
       }
     }
   </style>
@@ -1207,7 +1262,8 @@
       routeSummary.textContent = `Gesamtdistanz: ${totalKm.toLocaleString("de-DE")} km.`;
     }
 
-    function renderTips(station) {
+    function renderTips(station, options = {}) {
+      const { animateDetail = false, scrollToDetail = false } = options;
       const list = document.getElementById("tipsList");
       const detailCard = document.getElementById("tipDetailCard");
       const dayTripCard = document.getElementById("dayTripCard");
@@ -1228,18 +1284,25 @@
         detailCard.innerHTML = `<p class="muted">${categoryLabel(tipsCategory)}: keine Detaildaten vorhanden.</p>`;
       } else {
         visibleTips.forEach(tip => {
+          const isSelected = selectedTip && selectedTip.id === tip.id;
           const li = document.createElement("li");
           li.className = "item";
           li.innerHTML = `
-            <button class="tip-pick${selectedTip && selectedTip.id === tip.id ? " active" : ""}" type="button" data-tip-id="${tip.id}">
-              <strong>${tip.title}</strong>
+            <button class="tip-pick${isSelected ? " active" : ""}" type="button" data-tip-id="${tip.id}">
+              <div class="tip-pick-head">
+                <strong>${tip.title}</strong>
+                ${isSelected ? '<span class="tip-selected">● Ausgewählt</span>' : ""}
+              </div>
               <p class="mini">${tip.note}</p>
             </button>
           `;
           const pick = li.querySelector("button");
           pick.addEventListener("click", () => {
             tipSelection[selectionKey] = tip.id;
-            renderTips(station);
+            renderTips(station, {
+              animateDetail: true,
+              scrollToDetail: window.matchMedia("(max-width: 859px)").matches
+            });
           });
           list.appendChild(li);
         });
@@ -1267,6 +1330,7 @@
           : "";
 
         detailCard.innerHTML = `
+          <p class="detail-kicker">Details zu</p>
           <h4>${selectedTip.title}</h4>
           <p class="sub">${categoryLabel(tipsCategory)}</p>
           <p class="mini">${selectedTip.note}</p>
@@ -1282,6 +1346,15 @@
             ${imageBtn}
           </div>
         `;
+
+        detailCard.classList.remove("flash");
+        if (animateDetail) {
+          void detailCard.offsetWidth;
+          detailCard.classList.add("flash");
+        }
+        if (scrollToDetail) {
+          detailCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
 
         const openBtn = detailCard.querySelector("[data-open-image='1']");
         if (openBtn && selectedTip.image) {
@@ -1372,12 +1445,12 @@
 
     document.getElementById("tipsSightseeing").addEventListener("click", () => {
       tipsCategory = "sightseeing";
-      renderTips(stationById(activeStationId));
+      renderTips(stationById(activeStationId), { animateDetail: true });
     });
 
     document.getElementById("tipsCulinary").addEventListener("click", () => {
       tipsCategory = "culinary";
-      renderTips(stationById(activeStationId));
+      renderTips(stationById(activeStationId), { animateDetail: true });
     });
 
     const tipLightbox = document.getElementById("tipLightbox");
