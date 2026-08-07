@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Reiseplan PDF</title>
+  <style>
+    :root {
+      --bg: #102725;
+      --card: #f5f3ec;
+      --ink: #1a2f2b;
+      --accent: #2f7366;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+      background: linear-gradient(165deg, #b8d8d1 0%, #ecf5f2 38%, #f6ddae 100%);
+      color: var(--ink);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .bar {
+      background: var(--card);
+      border: 1px solid rgba(18, 58, 52, 0.14);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .bar a {
+      text-decoration: none;
+      font-weight: 700;
+      color: #fff;
+      background: var(--accent);
+      padding: 10px 12px;
+      border-radius: 10px;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 96px);
+      border: 1px solid rgba(18, 58, 52, 0.2);
+      border-radius: 14px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <strong>Reiseplan PDF</strong>
+    <a href="https://cdn.jsdelivr.net/gh/MacTwoCastle/Skandinavien-2026@main/docs/Reiseplanung.pdf">Direktlink zur PDF</a>
+  </div>
+
+  <iframe
+    title="Reiseplan als PDF"
+    src="https://cdn.jsdelivr.net/gh/MacTwoCastle/Skandinavien-2026@main/docs/Reiseplanung.pdf"
+  ></iframe>
+</body>
+</html>

@@ -2,6 +2,7 @@ const CACHE_NAME = "skandi-2026-v6";
 const CORE = [
   "./",
   "./index.html",
+  "./reiseplan-pdf.html",
   "./app.webmanifest",
   "./ANFORDERUNGEN.md",
   "../Reiseplanung.pdf",
